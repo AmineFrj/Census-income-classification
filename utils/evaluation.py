@@ -154,7 +154,7 @@ def compare_models_with_full_reporting(
     for train_idx, val_idx in cv.split(X, y):
         X_train, X_val = X.iloc[train_idx], X.iloc[val_idx]
         y_train, y_val = y.iloc[train_idx], y.iloc[val_idx]
-        model = CatBoostClassifier(verbose=0, random_state=random_state, auto_class_weights='Balanced')
+        model = CatBoostClassifier(verbose=0, random_state=random_state, auto_class_weights='Balanced', train_dir='reports/catboost_train_report')
         model.fit(X_train, y_train, cat_features=cat_features)
         y_pred = model.predict(X_val)
         y_proba = model.predict_proba(X_val)[:, 1]
@@ -182,7 +182,7 @@ def compare_models_with_full_reporting(
         'ROC AUC'
     ]
     df = df[[col for col in main_cols if col in df.columns]]
-    df = df.sort_values(by='1 recall', ascending=False).reset_index(drop=True)
+    df = df.sort_values(by='1 f1-score', ascending=False).reset_index(drop=True)
 
     return df.reset_index(drop=True)
 
@@ -251,7 +251,7 @@ def train_models_full(
     # CatBoost natif
     if X_train_mixed is not None and cat_features is not None:
         print("Training: CatBoost")
-        cat = CatBoostClassifier(verbose=0, random_state=random_state, auto_class_weights='Balanced')
+        cat = CatBoostClassifier(verbose=0, random_state=random_state, auto_class_weights='Balanced', train_dir='reports/catboost_train_report')
         models['CatBoost'] = cat.fit(X_train_mixed, y_train, cat_features=cat_features)
     else:
         print("Skipping CatBoost: X_train_mixed or cat_features missing.")
