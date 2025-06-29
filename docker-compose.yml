@@ -1,0 +1,12 @@
+name: Dataiku-assesment
+services:
+  app:
+    container_name: Assesment
+    build:
+      context: .
+    ports:
+      - "8888:8888"
+      - "8000:8000"
+      - "8866:8866"
+    volumes:
+      - ./data:/app/data

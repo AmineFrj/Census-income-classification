@@ -1,0 +1,40 @@
+{
+  "0": {
+    "precision": 0.9855042851467166,
+    "recall": 0.9277806275113277,
+    "f1-score": 0.9557716971888744,
+    "support": 93576.0
+  },
+  "1": {
+    "precision": 0.4207594068740893,
+    "recall": 0.793566117038474,
+    "f1-score": 0.5499355850557329,
+    "support": 6186.0
+  },
+  "accuracy": 0.9194583107796556,
+  "macro avg": {
+    "precision": 0.703131846010403,
+    "recall": 0.8606733722749009,
+    "f1-score": 0.7528536411223037,
+    "support": 99762.0
+  },
+  "weighted avg": {
+    "precision": 0.9504858230369506,
+    "recall": 0.9194583107796556,
+    "f1-score": 0.9306067827960635,
+    "support": 99762.0
+  },
+  "model_path": "models/catboost_final.cbm",
+  "features_path": "models/features_final.pkl",
+  "params": {
+    "task_type": "CPU",
+    "devices": "0",
+    "auto_class_weights": "Balanced",
+    "iterations": 500,
+    "depth": 10,
+    "learning_rate": 0.1,
+    "random_state": 42,
+    "l2_leaf_reg": 1,
+    "verbose": -1
+  }
+}

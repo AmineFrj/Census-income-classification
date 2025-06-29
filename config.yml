@@ -1,0 +1,21 @@
+model_path: "models/catboost_final.cbm"
+features_path: "models/features_final.pkl"
+report_path: "reports/final_metrics.json"
+cat_features:
+  [
+    "detailed_industry_recode",
+    "detailed_occupation_recode",
+    "own_business_or_self_employed",
+    "veterans_benefits",
+    "year",
+  ]
+catboost_params:
+  task_type: "CPU"
+  devices: "0"
+  auto_class_weights: "Balanced"
+  iterations: 500
+  depth: 10
+  learning_rate: 0.1
+  random_state: 42
+  l2_leaf_reg: 1
+  verbose: -1
