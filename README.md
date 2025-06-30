@@ -95,7 +95,9 @@ docker-compose up --build
 
 4. **Serve the model via API**
 
+   ```bash
    uvicorn scripts.serve:app --host 0.0.0.0 --port 8000 --reload
+   ```
 
    - Default: http://localhost:8000
    - API docs (Swagger): http://localhost:8000/docs
