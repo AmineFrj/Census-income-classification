@@ -58,24 +58,40 @@ docker-compose up --build
 
 2. **Train the model**
 
-   python scripts/train.py \
-    --train data/census_income_learn.csv \
-    --test data/census_income_test.csv \
-    --data-config utils/data_config.yml \
-    --model-config config.yml
+   ```bash
+   python -m scripts.train \
+     --train data/census_income_learn.csv \
+     --test data/census_income_test.csv \
+     --data-config utils/data_config.yml \
+     --model-config config.yml
+   ```
 
    - Trained model and feature list saved in `models/`
    - Evaluation report written to `reports/`
 
+   Tip: You can consult the helper to see all available options and arguments by running:
+
+   ```bash
+   python -m scripts.train --help
+   ```
+
 3. **Predict on new data**
 
-   python scripts/predict.py \
+   ```bash
+   python -m scripts.predict \
     --input data/census_income_test.csv \
     --output reports/predictions.csv \
     --model-config config.yml \
     --data-config utils/data_config.yml
+   ```
 
    - If the input file contains the target, a classification report is also generated in `reports/`
+
+   Tip: You can consult the helper to see all available options and arguments by running:
+
+   ```bash
+   python -m scripts.predict --help
+   ```
 
 4. **Serve the model via API**
 
