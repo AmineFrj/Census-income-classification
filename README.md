@@ -1,139 +1,151 @@
 # Census Income Prediction – ML Project
 
+A modular, production-ready pipeline for predicting high-income individuals using US Census data.  
+Includes robust data preprocessing, model selection, interpretability, and a Dockerized API for deployment.
+
+---
+
 ## Project Structure
 
 ```
 .
-├── data/           # Raw, metadata & processed data files
-├── models/         # Trained models and artefacts
-├── reports/        # Evaluation metrics, predictions, logs
-├── scripts/        # Executable scripts (training, prediction, API)
-├── src/            # Core modeling classes (CatBoostPipeline, etc)
-├── utils/          # Utilities: preprocessing, evaluation, config
-├── notebooks/      # (if present) Prototyping & experiments
-├── config.yml      # Model/serving configuration
-├── utils/data_config.yml # Preprocessing/data configuration
-├── Dockerfile, docker-compose.yml
+├── models/             # Trained models and artifacts
+│   ├── catboost_final.cbm
+│   └── features_final.pkl
+├── reports/            # Evaluation reports, plots, predictions
+├── scripts/            # Main scripts: train, predict, serve (API)
+│   ├── train.py
+│   ├── predict.py
+│   └── serve.py
+├── src/                # Core modeling CatBoostPipeline class
+│   ├── __init__.py
+│   └── model.py
+├── utils/              # Preprocessing, evaluation, config
+│   ├── __init__.py
+│   ├── data_config.yml
+│   ├── evaluation.py
+│   └── preprocessing.py
+├── 01_EDA.ipynb                    # EDA Notebook
+├── 02_Baseline experiments.ipynb   # Experiments Notebook
+├── 03_Final model evaluation.ipynb # Final evaluation Notebook
+├── config.yml          # Model/serving configuration
+├── Dockerfile
+├── docker-compose.yml
 ├── requirements.txt
-└── README.md
-
+├── README.md
+└── .gitignore
 ```
 
 ---
 
 ## Quickstart
 
-### 1. **Install dependencies**
+1. **Install dependencies**
 
-```bash
+```console
 pip install -r requirements.txt
 ```
 
-(or use Docker for full reproducibility)
-
-### 2. **Train the model**
+Or use Docker for full reproducibility
 
 ```bash
-python scripts/train.py \
+docker-compose up --build
+```
+
+- This will start a Jupyter Lab server accessible at http://localhost:8888.
+  Default token and password: 1234567890
+- It will also start the REST API, available at http://localhost:8000 (Swagger docs at /docs).
+
+2. **Train the model**
+
+   python scripts/train.py \
     --train data/census_income_learn.csv \
     --test data/census_income_test.csv \
     --data-config utils/data_config.yml \
     --model-config config.yml
-```
 
-- The trained model and feature list will be saved in `models/`
-- Evaluation report will be written in `reports/`
+   - Trained model and feature list saved in `models/`
+   - Evaluation report written to `reports/`
 
-### 3. **Predict on new data**
+3. **Predict on new data**
 
-```bash
-python scripts/predict.py \
+   python scripts/predict.py \
     --input data/census_income_test.csv \
     --output reports/predictions.csv \
     --model-config config.yml \
     --data-config utils/data_config.yml
-```
 
-- If the input file contains the target, a classification report is also generated in `reports/`
+   - If the input file contains the target, a classification report is also generated in `reports/`
 
-### 4. **Serve the model (API)**
+4. **Serve the model via API**
 
-```bash
-uvicorn serve:app --reload
-```
+   uvicorn scripts.serve:app --host 0.0.0.0 --port 8000 --reload
 
-- By default, serves on http://localhost:8000
-- Swagger UI: http://localhost:8000/docs
+   - Default: http://localhost:8000
+   - API docs (Swagger): http://localhost:8000/docs
 
 ---
 
 ## Configuration
 
-- **`config.yml`**: model hyperparameters, paths, categorical features
-- **`utils/data_config.yml`**: columns, categorical columns, missing values, and preprocessing steps (see `utils/preprocessing.py` for details)
+- `config.yml`: Model hyperparameters, file paths, categorical features.
+- `utils/data_config.yml`: Preprocessing steps, column names/types, handling of missing/categorical values.
 
 ---
 
-## Key scripts
+## Main Scripts
 
-| File                     | Description                              |
-| ------------------------ | ---------------------------------------- |
-| `scripts/train.py`       | Train and evaluate model, save artefacts |
-| `scripts/predict.py`     | Predict and (optionally) evaluate batch  |
-| `scripts/serve.py`       | Run FastAPI server for real-time scoring |
-| `utils/preprocessing.py` | All data cleaning & preprocessing        |
-| `utils/evaluation.py`    | Metrics, plots, SHAP/feature importance  |
-| `src/model.py`           | Modeling class (`CatBoostPipeline`)      |
-
----
-
-## Main Notebooks
-
-- `EDA.ipynb`: data exploration and understanding
-- `Baseline experiments.ipynb`: initial modeling, cross-validation, model selection
+| Script                 | Purpose                                  |
+| ---------------------- | ---------------------------------------- |
+| scripts/train.py       | Train and evaluate model, save artifacts |
+| scripts/predict.py     | Batch predictions & evaluation           |
+| scripts/serve.py       | Start FastAPI server (real-time scoring) |
+| utils/preprocessing.py | Data cleaning & transformation pipeline  |
+| utils/evaluation.py    | Metrics, plots, SHAP/feature analysis    |
+| src/model.py           | Modeling class (CatBoostPipeline)        |
 
 ---
 
-## Usage examples
+## Notebooks
 
-- **Retrain on new data**:  
-  Update the CSVs in `data/`, rerun `scripts/train.py`
-
-- **Predict on new batches**:  
-  Place files in `data/`, run `scripts/predict.py` with `--input ...`
-
-- **Add/adjust preprocessing**:  
-  Edit `utils/data_config.yml` (preprocessing steps are fully configurable)
+- 01_EDA.ipynb: Exploratory Data Analysis
+- 02_Baseline experiments.ipynb: Model benchmarking, CV, and selection
+- 03_Final model evaluation.ipynb: Fine-tuning, interpretability, results
 
 ---
 
-## Highlights & Features
+## Usage Examples
 
-- Modular codebase, clear separation of preprocessing, modeling, and serving
-- All config in YAML for reproducibility and flexibility
-- Robust to missing/categorical data (CatBoost native)
-- Batch and real-time inference supported
-- Automatic reports and metrics saving
-- Ready for Docker, CI/CD, Dataiku or cloud deployment
+- **Retrain on new data:**  
+  Update files in `data/`, rerun `scripts/train.py`.
+
+- **Predict on new data:**  
+  Place file in `data/`, run `scripts/predict.py` with `--input ...`.
+
+- **Adjust preprocessing:**  
+  Edit `utils/data_config.yml` – fully customizable pipeline.
 
 ---
 
-## Development & Contributing
+## Features
 
-- All code under `src/` and `utils/` is importable from scripts and notebooks
-- To add new models: create a class in `src/`, update training script and config
-- To extend preprocessing: modify `utils/preprocessing.py` and `data_config.yml`
+- Modular & reusable: Separate modules for preprocessing, modeling, API.
+- Config-driven: All settings in YAML for easy experiments and deployment.
+- Robust to missing/categorical data: CatBoost manages mixed types natively.
+- Batch & real-time: Predict via script or REST API.
+- Automated reporting: All metrics, curves, and predictions are saved.
+- Docker-ready: Full reproducibility, easy deployment (Dockerfile + docker-compose).
+- Explainability: Feature importance and SHAP values integrated.
+- CI/CD & cloud-ready: Structure is ready for automation or MLOps platforms.
 
 ---
 
 ## License
 
-MIT (or your choice) – see `LICENSE` for details
+MIT – see `LICENSE`
 
 ---
 
 ## Author
 
-- Amine Ferdjaoui, Data Scientist PhD
-
----
+Amine Ferdjaoui, Data Scientist, PhD
